@@ -10,9 +10,6 @@ class Publisher(Table):
 	id = sq.Column(sq.Integer, primary_key=True)
 	name = sq.Column(sq.String, unique=True)
 
-	def __init__(self, name):
-		self.name = name
-
 
 class Book(Table):
 	__tablename__ = 'book'
@@ -22,19 +19,12 @@ class Book(Table):
 	id_publisher = sq.Column(sq.Integer, sq.ForeignKey("publisher.id"))
 	publisher = relationship(Publisher, backref="hz")
 
-	def __init__(self, title, id_publisher):
-		self.title = title
-		self.id_publisher = id_publisher
-
 
 class Shop(Table):
 	__tablename__ = 'shop'
 
 	id = sq.Column(sq.Integer, primary_key=True)
 	name = sq.Column(sq.String, unique=True)
-
-	def __init__(self, name):
-		self.name = name
 
 
 class Stock(Table):
@@ -47,11 +37,6 @@ class Stock(Table):
 	book = relationship(Book)
 	shop = relationship(Shop)
 
-	def __init__(self, id_book, id_shop, count):
-		self.id_book = id_book
-		self.id_shop = id_shop
-		self.count = count
-
 
 class Sale(Table):
 	__tablename__ = 'sale'
@@ -62,12 +47,6 @@ class Sale(Table):
 	id_stock = sq.Column(sq.Integer, sq.ForeignKey("stock.id"), nullable=False)
 	count = sq.Column(sq.Integer, nullable=False)
 	stock = relationship(Stock)
-
-	def __init__(self, price, date_sale, id_stock, count):
-		self.price = price
-		self.date_sale = date_sale
-		self.id_stock = id_stock
-		self.count = count
 
 
 def create_tables(engine):

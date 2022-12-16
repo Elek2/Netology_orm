@@ -1,7 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from modules import create_tables
-import modules as M
+import modules as mls
 import json
 
 DSN = 'postgresql://postgres:nicaragua21@localhost:5432/omr'
@@ -14,20 +14,19 @@ create_tables(engine)
 pub_name = input('Введите название издателя: ')
 
 with sessionmaker(bind=engine)() as session:
-	for i in data:
-		table_name = i['model'].capitalize()
-		table_colums = i['fields']
-		record = eval(f"M.{table_name}(**{table_colums})")
-		session.add(record)
+	for rec in data:
+		t_name = rec['model'].capitalize()
+		t_id = rec['pk']
+		t_colums = rec['fields']
+		session.add(eval(f"M.{t_name}(id = {t_id}, **{t_colums})"))
 		session.commit()
 
-	quer = session.query(M.Publisher.name, M.Shop.name, M.Sale.price, M.Sale.date_sale). \
-		join(M.Book). \
-		join(M.Stock). \
-		join(M.Shop). \
-		join(M.Sale). \
-		filter(M.Publisher.name == f'{pub_name}').all()
+	quer = session.query(mls.Publisher.name, mls.Shop.name, mls.Sale.price, mls.Sale.date_sale). \
+		join(mls.Book). \
+		join(mls.Stock). \
+		join(mls.Shop). \
+		join(mls.Sale). \
+		filter(mls.Publisher.name == f'{pub_name}').all()
 
 	for sale in quer:
 		print(*sale, sep=' | ')
-
